@@ -524,6 +524,9 @@ sources = {
 		#"antibody_model_CDR_H3",
 		#"snugdock",
 	],
+        "pilot/jihun" : [
+                "bootcamp",
+        ],
 	"pilot/jim" : [
 		#"rotamerize",
 		#"test_helix_scoring",
