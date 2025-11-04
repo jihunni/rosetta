@@ -16,6 +16,15 @@
 #include <core/import_pose/import_pose.hh>
 #include <core/scoring/ScoreFunctionFactory.hh>
 #include <core/scoring/ScoreFunction.hh>
+#include <numeric/random/random.fwd.hh>
+#include <protocols/moves/MonteCarlo.fwd.hh>
+#include <protocols/moves/MonteCarlo.hh>
+#include <core/pack/pack_rotamers.hh>
+#include <core/pack/task/TaskFactory.hh>
+#include <core/pack/task/PackerTask.hh>
+#include <core/kinematics/MoveMap.hh>
+#include <core/optimization/MinimizerOptions.hh>
+#include <core/optimization/AtomTreeMinimizer.hh>
 
 int main( int argc, char ** argv) {
 	std::cout << "Hello World!" << std::endl;
@@ -35,6 +44,53 @@ int main( int argc, char ** argv) {
 	core::Real score = sfxn->score( *pose );
 	std::cout << "Score: " << score << std::endl ;
 
+	
+	core::Size randres = static_cast< core::Size > ( numeric::random::uniform() * pose->total_residue() + 1 );
+	core::Real pert1 = numeric::random::uniform() ;
+	core::Real pert2 = numeric::random::uniform() ;
+	core::Real orig_phi = pose->phi( randres );
+	core::Real orig_psi = pose->psi( randres );
+	pose->set_phi( randres, orig_phi + pert1 );
+	pose->set_psi( randres, orig_psi + pert2 );
+	core::Real temperature = 273+25;
+
+	protocols::moves::MonteCarlo monteCarlo = protocols::moves::MonteCarlo(*pose, *sfxn, temperature) ;
+	//protocols::moves::MonteCarloOP monteCarlo = protocols::moves::MonteCarlo(*pose, *sfxn, temperature) ;
+	
+	int max_iter = 100;
+	bool boltzmann_bool = false ;
+	core::pose::PoseOP pose_init=pose;
+	for (int i=0 ; i <= max_iter ; i++){
+		std::cout << "current iteration: " << i << std::endl;
+		core::Size randres = static_cast< core::Size > ( numeric::random::uniform() * pose->total_residue() + 1 );
+        	core::Real pert1 = numeric::random::uniform() ;
+        	core::Real pert2 = numeric::random::uniform() ;
+        	core::Real orig_phi = pose->phi( randres );
+        	core::Real orig_psi = pose->psi( randres );
+        	pose->set_phi( randres, orig_phi + pert1 );
+        	pose->set_psi( randres, orig_psi + pert2 );
+		
+		score = sfxn->score( *pose );
+		boltzmann_bool = monteCarlo.boltzmann(*pose, score, "unk", 1, 0) ;
+		if (boltzmann_bool is false) { 
+			//back to original init_pose
+			pose = pose_init ;
+		}
+
+		core::pack::task::PackerTaskOP repack_task = core::pack::task::TaskFactory::create_packer_task( *pose );
+		//repack_task->restrict_to_repacking();
+		(*repack_task).restrict_to_repacking();
+		core::pack::pack_rotamers( *pose, *sfxn, repack_task );
+
+		// minimization
+		core::kinematics::MoveMap mm;
+		mm.set_bb( true );
+		mm.set_chi( true );
+		
+		core::optimization::MinimizerOptions min_opts( "lbfgs_armijo_atol", 0.01, true );
+		core::optimization::AtomTreeMinimizer atm;
+		atm.run( *pose, mm, *sfxn, min_opts );
+	}
 	return 0;
 } 
 
