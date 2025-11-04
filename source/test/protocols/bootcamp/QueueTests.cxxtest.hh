@@ -29,17 +29,22 @@
 // Utility, etc Headers
 #include <basic/Tracer.hh>
 
+// Unit Headers
+#include <protocols/bootcamp/Queue.hh>
+
 static basic::Tracer TR("QueueTests");
 
 
 class QueueTests : public CxxTest::TestSuite {
 	//Define Variables
+private: 
+	protocols::bootcamp::Queue queue ;
 
 public:
 
 	void setUp() {
 		core_init();
-
+		queue = protocols::bootcamp::Queue() ;
 	}
 
 	void tearDown() {
@@ -51,10 +56,19 @@ public:
 	void test_first() {
 		TS_TRACE( "Running my first unit test!" );
 		TS_ASSERT( true );
-
-
-
 	}
+
+	void test_queue(){
+		TS_TRACE( "Running my first unit test for queue!" );
+		//TS_ASSERT( queue.is_queue() );
+		TS_ASSERT( queue.is_empty() );
+		queue.enqueue("add");
+		TS_ASSERT( queue.size() == 1 );
+		//TS_ASSERT( queue.is_segment.is_segment() == false )
+		queue.dequeue();
+		TS_ASSERT( queue.is_empty() );
+	}
+
 
 
 };
