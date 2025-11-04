@@ -900,6 +900,10 @@ sources = {
 		"vardist_solaccess" : [
 		"VarSolDRotamerDots",
 	],
+	"bootcamp": [
+		"QueueTests",
+	],
+
 
 }
 include_path = [ "#external/cxxtest", "#" ]
