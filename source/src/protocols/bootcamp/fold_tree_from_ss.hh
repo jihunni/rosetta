@@ -14,24 +14,28 @@
 // C++ headers
 #include <iostream>
 
-// Test headers
-#include <cxxtest/TestSuite.h>
-
-#include <test/util/pose_funcs.hh>
-#include <test/core/init_util.hh>
-#include <test/util/pose_funcs.hh>
-
+// basic headers
+#include <basic/options/option.hh>
+#include <basic/options/keys/in.OptionKeys.gen.hh>
+#include <basic/Tracer.hh>
+#include <devel/init.hh>
+#include <utility/pointer/owning_ptr.hh>
 
 /// Project headers
-#include <basic/Tracer.hh>
 #include <core/types.hh>
+#include <core/import_pose/import_pose.hh>
+#include <core/pose/Pose.fwd.hh>
+#include <core/pose/Pose.hh>
+#include <core/pose/variant_util.hh>
+#include <core/scoring/ScoreFunctionFactory.hh>
+#include <core/scoring/ScoreFunction.hh>
 #include <core/kinematics/FoldTree.fwd.hh>
 #include <core/kinematics/FoldTree.hh>
 #include <core/kinematics/Edge.fwd.hh>
 #include <core/kinematics/Edge.hh>
+
 #include <protocols/moves/DsspMover.fwd.hh>
 #include <protocols/moves/DsspMover.hh>
-
 
 
 namespace protocols {
@@ -46,7 +50,7 @@ public:
 	utility::vector1< std::pair< core::Size, core::Size > > 
 	identify_secondary_structure_spans( std::string const & ss_string );
 
-	std::string 
+	core::pose::Pose
     dssp_str_from_pose(core::pose::Pose pose);
 
 	std::tuple<utility::vector1< core::Size >, utility::vector1< core::Size>, utility::vector1< core::Size>> 
@@ -55,14 +59,5 @@ public:
 	core::kinematics::FoldTree 
     fold_tree_from_edge_info(std::tuple<utility::vector1< core::Size >, utility::vector1< core::Size>, utility::vector1< core::Size> > edge_info);
 
-	void 
-    test_secondary_structure_spans();
-	
-    void 
-    test_get_residue_edge();
-	
-    void 
-    test_from_pose_to_fold_tree();
-
-}
-}
+};
+};
