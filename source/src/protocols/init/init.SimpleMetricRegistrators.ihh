@@ -18,6 +18,9 @@ namespace protocols {
 
 using core::simple_metrics::SimpleMetricRegistrator;
 
+static SimpleMetricRegistrator< core::simple_metrics::metrics::PerResidueBfactorBootcampCreator > PerResidueBfactorBootcampCreator;
+
+
 static SimpleMetricRegistrator< core::simple_metrics::metrics::AverageProbabilitiesMetricCreator > reg_AverageProbabilitiesMetricCreator;
 
 static SimpleMetricRegistrator< core::simple_metrics::metrics::CalculatorMetricCreator > reg_CalculatorMetricCreator;

@@ -37,6 +37,7 @@
 
 //Simple Metrics in Protocols should go into:
 // protocols/analysis/simple_metrics
+#include <protocols/bootcamp/PerResidueBfactorBootcampCreator.hh>
 
 #include <protocols/analysis/simple_metrics/ConstraintsMetricCreator.hh> //Added by VKM, 10 May 2021.
 
