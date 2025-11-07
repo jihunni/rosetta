@@ -19,6 +19,12 @@
 
 // Core headers
 #include <core/types.hh>
+#include <core/pose/Pose.fwd.hh>
+#include <core/pose/Pose.hh>
+#include <core/chemical/ResidueType.fwd.hh>
+#include <core/chemical/ResidueType.hh>
+#include <core/pose/PDBInfo.fwd.hh>
+#include <core/pose/PDBInfo.hh>
 
 // Utility headers
 #include <utility/tag/XMLSchemaGeneration.fwd.hh>

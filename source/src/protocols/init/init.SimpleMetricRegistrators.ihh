@@ -18,9 +18,6 @@ namespace protocols {
 
 using core::simple_metrics::SimpleMetricRegistrator;
 
-static SimpleMetricRegistrator< core::simple_metrics::metrics::PerResidueBfactorBootcampCreator > PerResidueBfactorBootcampCreator;
-
-
 static SimpleMetricRegistrator< core::simple_metrics::metrics::AverageProbabilitiesMetricCreator > reg_AverageProbabilitiesMetricCreator;
 
 static SimpleMetricRegistrator< core::simple_metrics::metrics::CalculatorMetricCreator > reg_CalculatorMetricCreator;
@@ -82,6 +79,7 @@ static SimpleMetricRegistrator< core::simple_metrics::TestPerResidueStringMetric
 
 static SimpleMetricRegistrator< core::simple_metrics::composite_metrics::BestMutationsFromProbabilitiesMetricCreator > reg_BestMutationsFromProbabilitiesMetricCreator;
 
+
 static SimpleMetricRegistrator< core::simple_metrics::composite_metrics::CompositeEnergyMetricCreator  > reg_CompositeEnergyMetricCreator;
 
 static SimpleMetricRegistrator< core::simple_metrics::composite_metrics::ElectrostaticComplementarityMetricCreator  > reg_ElectrostaticComplementarityMetricCreator;
@@ -125,6 +123,8 @@ static SimpleMetricRegistrator< protocols::analysis::simple_metrics::SequenceRec
 
 // Added by VKM, 22 Apr. 2018:
 static SimpleMetricRegistrator< protocols::analysis::burial_metrics::PolarGroupBurialPyMolStringMetricCreator > reg_PolarGroupBurialPyMolStringMetricCreator;
+
+static SimpleMetricRegistrator< protocols::bootcamp::PerResidueBfactorBootcampCreator > PerResidueBfactorBootcampCreator;
 
 // Added by VKM, 19 April 2020:
 static SimpleMetricRegistrator< protocols::cyclic_peptide::PeptideInternalHbondsMetricCreator > reg_PeptideInternalHbondsMetricCreator;

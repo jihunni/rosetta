@@ -123,7 +123,7 @@ PerResidueBfactorBootcamp::calculate(const core::pose::Pose & pose) const {
 	std::map< core::Size, core::Real > b_fact_map;
 	for ( core::Size resi_index : selection ) {	
 		if ( pose.residue_type(resi_index).has( atom_type_ ) ) {
-			b_fact_map[resi_index] = pose.pdb_info()->bfactor(resi_index,pose.residue_type(resi_index).atom_index(atom_type_));
+			b_fact_map[resi_index] = pose.pdb_info()->bfactor(resi_index, pose.residue_type(resi_index).atom_index(atom_type_));
 		}
 	}
 
