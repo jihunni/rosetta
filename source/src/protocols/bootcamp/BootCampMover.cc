@@ -31,11 +31,38 @@
 #include <utility/vector1.hh>
 #include <basic/citation_manager/UnpublishedModuleInfo.hh>
 
-static basic::Tracer TR( "protocols.bootcamp.BootCampMover" );
+// C++ headers
+#include <iostream>
+
+/// Project headers
+#include <basic/Tracer.hh>
+#include <basic/datacache/DataMap.fwd.hh>
+#include <basic/datacache/DataMap.hh>
+#include <basic/citation_manager/UnpublishedModuleInfo.hh>
+
+#include <utility/vector1.hh>
+#include <utility/tag/XMLSchemaGeneration.fwd.hh>
+#include <utility/tag/XMLSchemaGeneration.hh>
+#include <utility/tag/Tag.fwd.hh>
+#include <utility/tag/Tag.hh>
+#include <utility/pointer/owning_ptr.hh>
+
+#include <core/types.hh>
+#include <core/scoring/ScoreFunction.fwd.hh>
+#include <core/scoring/ScoreFunction.hh>
+#include <core/scoring/xml_util.hh>
+
+#include <protocols/moves/Mover.fwd.hh>
+#include <protocols/moves/Mover.hh>
+#include <protocols/moves/MoverFactory.fwd.hh>
+#include <protocols/moves/MoverFactory.hh>
+#include <protocols/moves/mover_schemas.hh>
+
+
+// static basic::Tracer TR( "protocols.bootcamp.BootCampMover" );
 
 namespace protocols {
 namespace bootcamp {
-
 	/////////////////////
 	/// Constructors  ///
 	/////////////////////
@@ -44,7 +71,6 @@ namespace bootcamp {
 BootCampMover::BootCampMover():
 	protocols::moves::Mover( BootCampMover::mover_name() )
 {
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -61,6 +87,28 @@ BootCampMover::apply( core::pose::Pose& ){
 
 }
 
+core::scoring::ScoreFunctionOP 
+BootCampMover::get_score_function() const { 
+	return sfxn_; 
+}
+
+void 
+BootCampMover::set_score_function( core::scoring::ScoreFunctionOP sfxn ) { 
+	runtime_assert( sfxn != nullptr );
+	sfxn_ = sfxn;
+}
+
+core::Size 
+BootCampMover::get_num_iterations() const { 
+	return num_iterations_; 
+}
+
+void 
+BootCampMover::set_num_iterations( core::Size num_iterations ) { 
+	num_iterations_ = num_iterations; 
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief Show the contents of the Mover
 void
@@ -75,11 +123,32 @@ BootCampMover::show(std::ostream & output) const
 
 /// @brief parse XML tag (to use this Mover in Rosetta Scripts)
 void
-BootCampMover::parse_my_tag(
-	utility::tag::TagCOP ,
-	basic::datacache::DataMap&
+BootCampMover::parse_score_function(
+	utility::tag::TagCOP tag,
+	basic::datacache::DataMap& data
 ) {
+	core::scoring::ScoreFunctionOP new_score_function(
+		core::scoring::parse_score_function(tag, data)
+	);
+	if ( new_score_function == nullptr ) return;
+	BootCampMover::set_score_function( new_score_function );
+}
 
+void
+BootCampMover::parse_my_tag(
+	utility::tag::TagCOP const tag,
+	basic::datacache::DataMap& datamap
+) {
+	core::Size nloop_;
+	if ( tag->hasOption("nloop") ) {
+		nloop_ = tag->getOption<core::Size>("nloop",1);
+		runtime_assert( nloop_ > 0 );
+	}
+	else { nloop_ = 1; }
+
+	BootCampMover::set_num_iterations( nloop_ );
+	BootCampMover::parse_score_function( tag, datamap );
+	// BootCampMover::parse_task_operations( tag, datamap );
 }
 void BootCampMover::provide_xml_schema( utility::tag::XMLSchemaDefinition & xsd )
 {
@@ -98,6 +167,7 @@ void BootCampMover::provide_xml_schema( utility::tag::XMLSchemaDefinition & xsd 
 protocols::moves::MoverOP
 BootCampMover::fresh_instance() const
 {
+	
 	return utility::pointer::make_shared< BootCampMover >();
 }
 
@@ -116,10 +186,22 @@ std::string BootCampMover::mover_name() {
 	return "BootCampMover";
 }
 
-
+// void 
+// BootCampMover::provide_citation_info(basic::citation_manager::CitationCollectionList & citations) override{
+// 	using namespace basic::citation_manager;
+// 	CitationCollectionOP citation(
+// 		utility::pointer::make_shared< CitationCollection >(
+// 		"SetupMetalsMover",
+// 		CitedModuleType::Mover
+// 		)
+// 	);
+// 	citation->add_citation( CitationManager::get_instance()->get_citation_by_doi("10.1073/pnas.2012800118") );
+// 	citations.add( citation );
+// 	citations.add( metal_selector_ );
+// 	citations.add( contact_selector_ );
+// }
 
 /////////////// Creator ///////////////
-
 protocols::moves::MoverOP
 BootCampMoverCreator::create_mover() const
 {
@@ -135,33 +217,6 @@ BootCampMoverCreator::keyname() const
 void BootCampMoverCreator::provide_xml_schema( utility::tag::XMLSchemaDefinition & xsd ) const
 {
 	BootCampMover::provide_xml_schema( xsd );
-}
-
-/// @brief This mover is unpublished.  It returns Jihun as its author.
-void
-BootCampMover::provide_citation_info(basic::citation_manager::CitationCollectionList & citations ) const {
-	citations.add(
-		utility::pointer::make_shared< basic::citation_manager::UnpublishedModuleInfo >(
-		"BootCampMover", basic::citation_manager::CitedModuleType::Mover,
-		"Jihun",
-		"TODO: institution",
-		"jeung@uw.edu",
-		"Wrote the BootCampMover."
-		)
-	);
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-	/// private methods ///
-	///////////////////////
-
-
-std::ostream &
-operator<<( std::ostream & os, BootCampMover const & mover )
-{
-	mover.show(os);
-	return os;
 }
 
 

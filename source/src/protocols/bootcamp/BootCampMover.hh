@@ -16,6 +16,7 @@
 
 // Unit headers
 #include <protocols/bootcamp/BootCampMover.fwd.hh>
+#include <protocols/moves/Mover.fwd.hh>
 #include <protocols/moves/Mover.hh>
 
 // Protocol headers
@@ -29,6 +30,50 @@
 //#include <utility/tag/XMLSchemaGeneration.fwd.hh> //transcluded from Mover
 
 #include <basic/citation_manager/UnpublishedModuleInfo.fwd.hh>
+
+// Core headers
+#include <core/pose/Pose.hh>
+
+// Basic/Utility headers
+#include <basic/Tracer.hh>
+#include <utility/tag/Tag.hh>
+#include <utility/pointer/memory.hh>
+
+// XSD Includes
+#include <utility/tag/XMLSchemaGeneration.hh>
+#include <protocols/moves/mover_schemas.hh>
+
+// Citation Manager
+#include <utility/vector1.hh>
+#include <basic/citation_manager/UnpublishedModuleInfo.hh>
+
+// C++ headers
+#include <iostream>
+
+/// Project headers
+#include <basic/Tracer.hh>
+#include <basic/datacache/DataMap.fwd.hh>
+#include <basic/datacache/DataMap.hh>
+#include <basic/citation_manager/UnpublishedModuleInfo.hh>
+
+#include <utility/vector1.hh>
+#include <utility/tag/XMLSchemaGeneration.fwd.hh>
+#include <utility/tag/XMLSchemaGeneration.hh>
+#include <utility/tag/Tag.fwd.hh>
+#include <utility/tag/Tag.hh>
+#include <utility/pointer/owning_ptr.hh>
+
+#include <core/types.hh>
+#include <core/scoring/ScoreFunction.fwd.hh>
+#include <core/scoring/ScoreFunction.hh>
+#include <core/scoring/xml_util.hh>
+
+#include <protocols/moves/Mover.fwd.hh>
+#include <protocols/moves/Mover.hh>
+#include <protocols/moves/MoverFactory.fwd.hh>
+#include <protocols/moves/MoverFactory.hh>
+#include <protocols/moves/mover_schemas.hh>
+
 
 namespace protocols {
 namespace bootcamp {
@@ -72,6 +117,11 @@ public:
 
 	/// @brief parse XML tag (to use this Mover in Rosetta Scripts)
 	void
+	parse_score_function(
+		utility::tag::TagCOP tag,
+		basic::datacache::DataMap & data );
+	
+	void
 	parse_my_tag(
 		utility::tag::TagCOP tag,
 		basic::datacache::DataMap & data ) override;
@@ -100,12 +150,25 @@ public:
 public: //Function overrides needed for the citation manager:
 
 	/// @brief This mover is unpublished.  It returns Jihun as its author.
-	void provide_citation_info(basic::citation_manager::CitationCollectionList & citations) const override;
+	// void provide_citation_info(basic::citation_manager::CitationCollectionList & citations) const override;
 
 private: // methods
 
-private: // data
+	core::scoring::ScoreFunctionOP 
+	get_score_function() const;
 
+	void 
+	set_score_function( core::scoring::ScoreFunctionOP sfxn ) ;
+
+	core::Size 
+	get_num_iterations() const ;
+
+	void 
+	set_num_iterations( core::Size num_iterations ) ;
+
+private: // data
+	core::scoring::ScoreFunctionOP sfxn_;
+	core::Size num_iterations_;
 };
 
 std::ostream &

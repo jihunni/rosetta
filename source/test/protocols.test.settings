@@ -11,7 +11,8 @@
 
 sources = {
 	"bootcamp":[
-		"FoldTreeFromSS",
+#		"FoldTreeFromSS",
+		"BootCampMover",
 	],
 	"aa_composition" : [
 		"AddHelixSequenceConstraintsMoverTests",
